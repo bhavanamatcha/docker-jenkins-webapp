@@ -4,27 +4,25 @@ pipeline {
     stages {
         stage('Clone Code') {
             steps {
-                git 'https://github.com/bhavanamatcha/docker-jenkins-webapp.git'
+                git branch: 'main', url: 'https://github.com/bhavanamatcha/docker-jenkins-webapp.git'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building Docker image...'
-                sh 'docker build -t static-site .'
+                echo 'Build step (if any)'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying Docker container...'
                 sh '''
+                    docker build -t static-site .
                     docker stop static-site || true
                     docker rm static-site || true
-                    docker run -d -p 8081:80 --name static-site static-site
+                    docker run -d -p 80:80 --name static-site static-site
                 '''
             }
         }
     }
 }
-
